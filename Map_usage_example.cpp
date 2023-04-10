@@ -7,8 +7,7 @@
 #include "MapT.h"
 
 int main(void) {
-
-    MapT<int,string> map;
+    MapT<int, string> map;
 
     map.Add(95381, "Turlock");
     map.Add(90210, "Beverly Hills");
@@ -44,7 +43,7 @@ int main(void) {
     cout << "Key/Value pairs" << endl;
     map.ResetIterator();
     for (int i = 0; i < map.Size(); i++) {
-        pair<int,string> currPair = map.GetNextPair();
+        pair<int, string> currPair = map.GetNextPair();
         cout << "Key/Value:\t" << currPair.first << "/" << currPair.second << endl;
     }
 

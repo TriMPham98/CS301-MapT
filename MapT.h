@@ -5,11 +5,12 @@
 #ifndef MAPT_H
 #define MAPT_H
 
-#include <forward_list>
+#include <forward_list> // stl library for singly linked list
 
 using namespace std;
 
-class KeyDoesNotExist {};
+class KeyDoesNotExist {
+};
 
 template<class K, class T>
 class MapT {
@@ -17,11 +18,15 @@ public:
     MapT();
 
     void Add(K key, T value);
+
     void Remove(K key);
+
     bool Contains(K key);
 
     double LoadFactor();
+
     void SetMaxLoad(double maxLoad);
+
     void Rehash(int numBuckets);
 
     T operator[](K key);
@@ -29,10 +34,11 @@ public:
     int Size() { return numKeys; }
 
     void ResetIterator();
-    pair<K,T> GetNextPair();
+
+    pair<K, T> GetNextPair();
 
 private:
-    forward_list<pair<K,T>>* buckets;   // Each node contains a key and value
+    forward_list<pair<K, T> > *buckets;   // Each node contains a key and value
     int numBuckets;
     int numKeys;
 
@@ -48,11 +54,11 @@ private:
     // if this iterator declaration is a field or a type.
     // By putting typename in front, it is telling the
     // compiler it is a type.
-    typename forward_list<pair<K,T>>::iterator mapIter;
+    typename forward_list<pair<K, T> >::iterator mapIter;
     int currBucket;
 
 
-    int GetHashIndex(const K& key);
+    int GetHashIndex(const K &key);
 };
 
 
