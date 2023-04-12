@@ -19,6 +19,15 @@ MapT<K, T>::MapT() {
 }
 
 template<class K, class T>
+MapT<K, T>::MapT(int numBuckets) {
+    this->numBuckets = numBuckets;
+    buckets = new forward_list<pair<K, T> >[numBuckets];
+    numKeys = 0;
+    maxLoad = DEFAULT_LOAD;
+    currBucket = 0;
+}
+
+template<class K, class T>
 void MapT<K, T>::Add(K key, T value) {
 
     // Find the appropriate bucket that key lives in
@@ -34,7 +43,9 @@ void MapT<K, T>::Add(K key, T value) {
     numKeys++;
 
     // Check load factor
-
+    if (LoadFactor() > maxLoad) {
+        Rehash(2 * numBuckets);
+    }
 }
 
 template<class K, class T>
@@ -92,20 +103,53 @@ template<class K, class T>
 void MapT<K, T>::Rehash(int numBuckets) {
     MapT<K, T> newMap(numBuckets);  // Need to copy over all elements to newMap
 
+    for (int b = 0; b < this->numBuckets; b++) {
+        for (auto it = buckets[b].begin(); it != buckets[b].end(); ++it) {
+            newMap.Add(it->first, it->second);
+        }
+    }
+
+    *this = newMap;
+}
+
+template<class K, class T>
+MapT<K, T> &MapT<K, T>::operator=(const MapT<K, T> &otherMap) {
+    delete[]this->buckets;
+
+    this->buckets = new forward_list<pair<K, T> >[otherMap.numBuckets];
+    this->numBuckets = otherMap.numBuckets;
+    this->numKeys = 0;
+
+    for (int b = 0; b < otherMap.numBuckets; b++) {
+        for (auto it = otherMap.buckets[b].begin(); it != otherMap.buckets[b].end(); ++it) {
+            this->Add(it->first, it->second);
+        }
+    }
+
+    return *this;
 }
 
 template<class K, class T>
 void MapT<K, T>::ResetIterator() {
-    mapIter = buckets[0].begin();
+    mapIter = buckets[currBucket].begin();
     currBucket = 0;
 }
 
 template<class K, class T>
 pair<K, T> MapT<K, T>::GetNextPair() {
-    pair<K, T> currVal;
+    while (mapIter == buckets[currBucket].end()) {
+        currBucket++;
+        mapIter = buckets[currBucket].begin();
 
+        if (currBucket >= numBuckets) {
+            throw IteratorOutOfBounds();
+        }
+    }
 
-    return currVal;
+    pair<K, T> valueToReturn = *mapIter;
+    mapIter++;
+
+    return valueToReturn;
 }
 
 template<class K, class T>
@@ -114,6 +158,3 @@ int MapT<K, T>::GetHashIndex(const K &key) {
     typename unordered_map<K, T>::hasher hashFunction = mapper.hash_function();
     return static_cast<int>(hashFunction(key) % numBuckets);
 }
-
-
-

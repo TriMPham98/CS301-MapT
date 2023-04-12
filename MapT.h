@@ -12,10 +12,15 @@ using namespace std;
 class KeyDoesNotExist {
 };
 
+class IteratorOutOfBounds {
+};
+
 template<class K, class T>
 class MapT {
 public:
     MapT();
+
+    MapT(int numBuckets);
 
     void Add(K key, T value);
 
@@ -30,6 +35,8 @@ public:
     void Rehash(int numBuckets);
 
     T operator[](K key);
+
+    MapT<K, T> &operator=(const MapT<K, T> &otherMap);
 
     int Size() { return numKeys; }
 
