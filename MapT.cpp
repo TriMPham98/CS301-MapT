@@ -15,6 +15,7 @@ MapT<K, T>::MapT() {
     buckets = new forward_list<pair<K, T> >[numBuckets];
     numKeys = 0;
     maxLoad = DEFAULT_LOAD;
+    currBucket = 0;
 }
 
 template<class K, class T>
