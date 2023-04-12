@@ -29,7 +29,7 @@ int main(void) {
         cout << map[90210] << endl;
     }
     catch (KeyDoesNotExist err) {
-        cout << 90211 << ": Key does not exist" << endl;
+        cout << 90210 << ": Key does not exist" << endl;
     }
 
     cout << endl;
